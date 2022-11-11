@@ -75,9 +75,6 @@ func (nd *Node) addComplexeNode(cont string) {
 		nd.addSimpleNode(cont)
 	} else {
 		nodeData := nd.children[index].data
-		// pprint("---------- nodedata ----------  ")
-		// pprint(cont)
-		// pprint(nodeData)
 		match := countMatch(nodeData, cont)
 
 		if match == len(nodeData) {
@@ -85,8 +82,6 @@ func (nd *Node) addComplexeNode(cont string) {
 		} else {
 			newOrigin := nodeData[:match]
 			newSuffix := nodeData[match:]
-			// pprint(newOrigin)
-			// pprint(newSuffix)
 			newNd := nd.cutNode(newSuffix)
 			nd.data = newOrigin
 			nd.children[newSuffix[0]-'a'] = newNd
@@ -124,7 +119,6 @@ func main() {
 	tree.addword("aban")
 	tree.addword("abd")
 	pprint("---------- head ----------  ")
-	// pprint(tree.root)
 	pprint(tree.root)
 	pprint(tree.root.children[0])
 	pprint(tree.root.children[3])
