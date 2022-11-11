@@ -113,6 +113,23 @@ func (tree *Tree) addword(word string) {
 	tree.root.addNode(word)
 }
 
+func (nd *Node) print(appendix string) {
+	if nd.end {
+		pprint(appendix + nd.data)
+	} else {
+		for i := 0; i < ALPHA_NUMBER; i++ {
+			if nd.children[i] != nil {
+				nd.children[i].print(appendix + nd.data)
+			}
+		}
+	}
+
+}
+
+func (tree Tree) print() {
+	tree.root.print("")
+}
+
 func main() {
 	// node := Node{data: "dd", end: false}
 
@@ -126,13 +143,15 @@ func main() {
 	tree.addword("caba")
 	tree.addword("cabaa")
 	// tree.addword("abd")
-	pprint("---------- head ----------  ")
-	pprint(tree.root)
-	pprint('\n')
-	pprint(tree.root.children[2])
-	pprint('\n')
-	pprint(tree.root.children[2].children[8])
-	pprint('\n')
-	pprint(tree.root.children[2].children[0])
+	// pprint("---------- head ----------  ")
+	// pprint(tree.root)
+	// pprint('\n')
+	// pprint(tree.root.children[2])
+	// pprint('\n')
+	// pprint(tree.root.children[2].children[8])
+	// pprint('\n')
+	// pprint(tree.root.children[2].children[0])
 	// pprint(tree.root.children[3])
+
+	tree.print()
 }
