@@ -3,13 +3,14 @@ package radix
 import (
 	"fmt"
 	"math"
+	"strings"
 )
 
 const (
 	ALPHA_NUMBER = 27
 )
 
-var EPS = "\000"
+var EPSILONE = "\000"
 
 type Node struct {
 	data     string
@@ -40,7 +41,7 @@ func (nd *Node) addSimpleNode(cont string) {
 		node.children[i] = nil
 	}
 	index := cont[0] - 'a'
-	if cont == EPS {
+	if cont == EPSILONE {
 		index = 26
 	}
 	if nd.children[index] != nil {
@@ -79,8 +80,8 @@ func (nd *Node) cutNode(newData string) *Node {
 func (nd *Node) addComplexeNode(cont string) {
 	index := cont[0] - 'a'
 	if nd.children[index] == nil {
-		if nd.data != EPS && nd.end {
-			nd.addSimpleNode(EPS)
+		if nd.data != EPSILONE && nd.end {
+			nd.addSimpleNode(EPSILONE)
 		}
 		nd.addSimpleNode(cont)
 	} else {
@@ -103,7 +104,7 @@ func (nd *Node) addComplexeNode(cont string) {
 }
 
 func TreeInit() *Tree {
-	head := newNode(EPS)
+	head := newNode(EPSILONE)
 	return &Tree{head}
 }
 
@@ -122,11 +123,23 @@ func (tree *Tree) Addword(word string) {
 func (nd *Node) print(appendix string, level string) {
 	pprint(level + nd.data)
 	if nd.end {
-		pprint(level + "# " + appendix + nd.data)
+		pprint(level + "-> " + appendix + nd.data)
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
 			if nd.children[i] != nil {
-				nd.children[i].print(appendix+nd.data, level+"--")
+				nd.children[i].print(appendix+nd.data, level+level)
+			}
+		}
+	}
+}
+
+func (nd *Node) SimplePrint(appendix string) {
+	if nd.end {
+		pprint(appendix + nd.data)
+	} else {
+		for i := 0; i < ALPHA_NUMBER; i++ {
+			if nd.children[i] != nil {
+				nd.children[i].SimplePrint(appendix + nd.data)
 			}
 		}
 	}
@@ -158,32 +171,84 @@ func (tree Tree) SearchTree(target string) bool {
 	return exists
 }
 
+func (nd Node) getLastNode(target string, path *[]string) *Node {
+
+	if target == "" {
+		return &nd
+	}
+
+	index := target[0] - 'a'
+
+	if nd.children[index] == nil {
+		return nil
+	}
+
+	matched := countMatch(target, nd.children[index].data)
+
+	*path = append(*path, target[:matched])
+
+	if matched != len(nd.children[index].data) {
+
+		return nd.children[index]
+	}
+
+	return nd.children[index].getLastNode(target[matched:], path)
+}
+
+// func checkPrefix(main string, sub string) (bool, string) {
+// 	if main == sub {
+// 		return false, ""
+// 	}
+
+// 	remainder := strings.Replace(main, sub, "", 1)
+
+// 	return true, remainder
+// }
+
+func (nd Node) getPossibleSuffixes(start string) {
+	path := []string{}
+	branchStart := nd.getLastNode(start, &path)
+
+	// prefixed, _ := checkPrefix(branchStart.data, path[len(path)-1])
+
+	fullPath := strings.Join(path[:len(path)-1], "")
+	// branchStart.print(fullPath, "--")
+
+	branchStart.SimplePrint(fullPath)
+}
+
+func (tree Tree) AutoComplete(start string) bool {
+	tree.root.getPossibleSuffixes(start)
+	return true
+}
+
 func (tree Tree) Print() {
 	tree.root.print("", "--")
 }
 
-// func main() {
+func main() {
 
-// 	tree := TreeInit()
-// 	// tree.Addword("aban")
-// 	// tree.Addword("cabi")
-// 	// tree.Addword("caba")
-// 	// tree.Addword("cabaa")
-// 	// tree.Addword("czbaa")
-// 	tree.Addword("khairi")
-// 	tree.Addword("khairis")
-// 	tree.Addword("khkkris")
-// 	tree.Addword("khkklis")
-// 	// tree.addword("abd")
-// 	// pprint("---------- head ----------  ")
-// 	// pprint(tree.root)
-// 	pprint("\n")
-// 	pprint(tree.root.children[10])
-// 	pprint("\n")
-// 	pprint(tree.root.children[10].children[0])
-// 	pprint("\n")
-// 	// pprint(tree.root.children[2].children[0])
-// 	// pprint(tree.root.children[3])
+	tree := TreeInit()
+	tree.Addword("aban")
+	tree.Addword("cabi")
+	tree.Addword("caba")
+	tree.Addword("cabaa")
+	tree.Addword("czbaa")
+	tree.Addword("khairi")
+	tree.Addword("khairis")
+	tree.Addword("khkkris")
+	// tree.addword("abd")
+	// pprint("---------- head ----------  ")
+	// pprint(tree.root)
+	// pprint("\n")
+	// pprint(tree.root.children[10])
+	// pprint("\n")
+	// pprint(tree.root.children[10].children[0])
+	// pprint("\n")
+	// pprint(tree.root.children[2].children[0])
+	// pprint(tree.root.children[3])
 
-// 	pprint(tree.SearchTree("khair"))
-// }
+	// pprint(tree.SearchTree("czbaa"))
+
+	tree.AutoComplete("c")
+}

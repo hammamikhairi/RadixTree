@@ -22,9 +22,11 @@ func main() {
 	tree.Addword("khkklis")
 
 	// prints the tree (currently unhuman)
+	fmt.Println("------- Print Tree -------")
 	tree.Print()
 
 	// checks if a word exists
+	fmt.Println("------- Word Checks -------")
 	fmt.Println(tree.SearchTree("k"))       // -> false
 	fmt.Println(tree.SearchTree("kh"))      // -> false
 	fmt.Println(tree.SearchTree("kha"))     // -> false
@@ -32,4 +34,11 @@ func main() {
 	fmt.Println(tree.SearchTree("khair"))   // -> false
 	fmt.Println(tree.SearchTree("khairi"))  // -> true
 	fmt.Println(tree.SearchTree("khairis")) // -> true
+
+	// auto completion based on initial strings (not finalized ( no checks ) )
+	fmt.Println("------- Auto Completion \"c\" -------")
+	tree.AutoComplete("c")
+
+	fmt.Println("------- Auto Completion \"kh\" -------")
+	tree.AutoComplete("kh")
 }
