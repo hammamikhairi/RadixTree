@@ -1,4 +1,4 @@
-package main
+package radix
 
 import (
 	"fmt"
@@ -116,50 +116,55 @@ func (nd *Node) addNode(cont string) {
 	}
 }
 
-func (tree *Tree) addword(word string) {
+func (tree *Tree) Addword(word string) {
 	tree.root.addNode(word)
 }
 
-func (nd *Node) print(appendix string) {
+func (nd *Node) print(appendix string, level string) {
+	pprint(level + nd.data)
 	if nd.end {
-		pprint(appendix + nd.data)
+		pprint(level + "# " + appendix + nd.data)
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
 			if nd.children[i] != nil {
-				nd.children[i].print(appendix + nd.data)
+				nd.children[i].print(appendix+nd.data, level+"--")
 			}
 		}
 	}
 
 }
 
-func (tree Tree) print() {
-	tree.root.print("")
+func (tree Tree) Print() {
+	tree.root.print("", "--")
 }
 
-func main() {
-	// node := Node{data: "dd", end: false}
+// func main() {
+// 	// node := Node{data: "dd", end: false}
 
-	// node.addSimpleNode("ddee")
+// 	// node.addSimpleNode("ddee")
 
-	// pprint(node.children)
+// 	// pprint(node.children)
 
-	tree := TreeInit()
-	tree.addword("aban")
-	tree.addword("cabi")
-	tree.addword("caba")
-	tree.addword("cabaa")
-	tree.addword("czbaa")
-	// tree.addword("abd")
-	// pprint("---------- head ----------  ")
-	// pprint(tree.root)
-	// pprint('\n')
-	// pprint(tree.root.children[2])
-	// pprint('\n')
-	// pprint(tree.root.children[2].children[25])
-	// pprint('\n')
-	// pprint(tree.root.children[2].children[0])
-	// pprint(tree.root.children[3])
+// 	tree := TreeInit()
+// 	tree.Addword("aban")
+// 	tree.Addword("cabi")
+// 	tree.Addword("caba")
+// 	tree.Addword("cabaa")
+// 	tree.Addword("czbaa")
+// 	tree.Addword("khairi")
+// 	tree.Addword("khairis")
+// 	tree.Addword("khkkris")
+// 	tree.Addword("khkklis")
+// 	// tree.addword("abd")
+// 	// pprint("---------- head ----------  ")
+// 	// pprint(tree.root)
+// 	// pprint('\n')
+// 	// pprint(tree.root.children[2])
+// 	// pprint('\n')
+// 	// pprint(tree.root.children[2].children[25])
+// 	// pprint('\n')
+// 	// pprint(tree.root.children[2].children[0])
+// 	// pprint(tree.root.children[3])
 
-	tree.print()
-}
+// 	tree.Print()
+// }
