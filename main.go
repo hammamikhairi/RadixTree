@@ -6,6 +6,8 @@ import (
 )
 
 func main() {
+
+	//initialize tree
 	tree := TreeInit()
 
 	// add words
