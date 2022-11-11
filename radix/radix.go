@@ -82,10 +82,10 @@ func (nd *Node) addComplexeNode(cont string) {
 		} else {
 			newOrigin := nodeData[:match]
 			newSuffix := nodeData[match:]
-			newNd := nd.cutNode(newSuffix)
-			nd.data = newOrigin
-			nd.children[newSuffix[0]-'a'] = newNd
-			nd.addSimpleNode(cont[match:])
+			newNd := nd.children[index].cutNode(newSuffix)
+			nd.children[index].data = newOrigin
+			nd.children[index].children[newSuffix[0]-'a'] = newNd
+			nd.children[index].addSimpleNode(cont[match:])
 
 		}
 	}
@@ -117,9 +117,11 @@ func main() {
 
 	tree := TreeInit()
 	tree.addword("aban")
-	tree.addword("abd")
+	tree.addword("cabi")
+	tree.addword("caba")
+	// tree.addword("abd")
 	pprint("---------- head ----------  ")
 	pprint(tree.root)
-	pprint(tree.root.children[0])
-	pprint(tree.root.children[3])
+	pprint(tree.root.children[2].children[8])
+	// pprint(tree.root.children[3])
 }
