@@ -134,23 +134,43 @@ func (nd *Node) print(appendix string, level string) {
 
 }
 
+func (nd Node) search(target string) bool {
+	if target == "" && (nd.end || nd.children[26] != nil) {
+		return true
+	} else if target == "" {
+		return false
+	}
+
+	index := target[0] - 'a'
+	if nd.children[index] == nil {
+		return false
+	}
+
+	if len(nd.children[index].data) > len(target) {
+		return false
+	}
+
+	return nd.children[index].search(target[len(nd.children[index].data):])
+}
+
+func (tree Tree) SearchTree(target string) bool {
+	// var path *[]string
+	exists := tree.root.search(target)
+	return exists
+}
+
 func (tree Tree) Print() {
 	tree.root.print("", "--")
 }
 
 // func main() {
-// 	// node := Node{data: "dd", end: false}
-
-// 	// node.addSimpleNode("ddee")
-
-// 	// pprint(node.children)
 
 // 	tree := TreeInit()
-// 	tree.Addword("aban")
-// 	tree.Addword("cabi")
-// 	tree.Addword("caba")
-// 	tree.Addword("cabaa")
-// 	tree.Addword("czbaa")
+// 	// tree.Addword("aban")
+// 	// tree.Addword("cabi")
+// 	// tree.Addword("caba")
+// 	// tree.Addword("cabaa")
+// 	// tree.Addword("czbaa")
 // 	tree.Addword("khairi")
 // 	tree.Addword("khairis")
 // 	tree.Addword("khkkris")
@@ -158,13 +178,13 @@ func (tree Tree) Print() {
 // 	// tree.addword("abd")
 // 	// pprint("---------- head ----------  ")
 // 	// pprint(tree.root)
-// 	// pprint('\n')
-// 	// pprint(tree.root.children[2])
-// 	// pprint('\n')
-// 	// pprint(tree.root.children[2].children[25])
-// 	// pprint('\n')
+// 	pprint("\n")
+// 	pprint(tree.root.children[10])
+// 	pprint("\n")
+// 	pprint(tree.root.children[10].children[0])
+// 	pprint("\n")
 // 	// pprint(tree.root.children[2].children[0])
 // 	// pprint(tree.root.children[3])
 
-// 	tree.Print()
+// 	pprint(tree.SearchTree("khair"))
 // }
