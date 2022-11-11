@@ -41,6 +41,9 @@ func (nd *Node) addSimpleNode(cont string) {
 		node.children[i] = nil
 	}
 	index := cont[0] - 'a'
+	if cont == EPS {
+		index = 26
+	}
 	if nd.children[index] != nil {
 		panic("cant rewrite a node")
 	}
@@ -72,6 +75,9 @@ func (nd *Node) cutNode(newData string) *Node {
 func (nd *Node) addComplexeNode(cont string) {
 	index := cont[0] - 'a'
 	if nd.children[index] == nil {
+		if nd.data != EPS && nd.end {
+			nd.addSimpleNode(EPS)
+		}
 		nd.addSimpleNode(cont)
 	} else {
 		nodeData := nd.children[index].data
@@ -86,7 +92,6 @@ func (nd *Node) addComplexeNode(cont string) {
 			nd.children[index].data = newOrigin
 			nd.children[index].children[newSuffix[0]-'a'] = newNd
 			nd.children[index].addSimpleNode(cont[match:])
-
 		}
 	}
 }
@@ -119,9 +124,15 @@ func main() {
 	tree.addword("aban")
 	tree.addword("cabi")
 	tree.addword("caba")
+	tree.addword("cabaa")
 	// tree.addword("abd")
 	pprint("---------- head ----------  ")
 	pprint(tree.root)
+	pprint('\n')
+	pprint(tree.root.children[2])
+	pprint('\n')
 	pprint(tree.root.children[2].children[8])
+	pprint('\n')
+	pprint(tree.root.children[2].children[0])
 	// pprint(tree.root.children[3])
 }
