@@ -65,10 +65,15 @@ func countMatch(main string, sub string) int {
 
 func (nd *Node) cutNode(newData string) *Node {
 	newNd := newNode(newData)
+	flag := true
 	for i := 0; i < ALPHA_NUMBER; i++ {
+		if flag && nd.children[i] != nil {
+			flag = false
+		}
 		newNd.children[i] = nd.children[i]
 		nd.children[i] = nil
 	}
+	newNd.end = nd.end
 	return newNd
 }
 
@@ -91,7 +96,9 @@ func (nd *Node) addComplexeNode(cont string) {
 			newNd := nd.children[index].cutNode(newSuffix)
 			nd.children[index].data = newOrigin
 			nd.children[index].children[newSuffix[0]-'a'] = newNd
+			nd.children[index].end = false
 			nd.children[index].addSimpleNode(cont[match:])
+			// pprint(nd.children[index])
 		}
 	}
 }
@@ -142,13 +149,14 @@ func main() {
 	tree.addword("cabi")
 	tree.addword("caba")
 	tree.addword("cabaa")
+	tree.addword("czbaa")
 	// tree.addword("abd")
 	// pprint("---------- head ----------  ")
 	// pprint(tree.root)
 	// pprint('\n')
 	// pprint(tree.root.children[2])
 	// pprint('\n')
-	// pprint(tree.root.children[2].children[8])
+	// pprint(tree.root.children[2].children[25])
 	// pprint('\n')
 	// pprint(tree.root.children[2].children[0])
 	// pprint(tree.root.children[3])

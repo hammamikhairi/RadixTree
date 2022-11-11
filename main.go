@@ -1,7 +1,7 @@
 package main
 
-import "example/mymodule/Radixtree/radix"
+// import "example/mymodule/Radixtree/radix"
 
 func main() {
-	radix.Test()
+	// radix.Test()
 }
