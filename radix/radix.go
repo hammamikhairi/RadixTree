@@ -14,7 +14,7 @@ var EPSILONE = "\000"
 
 type Node struct {
 	data     string
-	end      bool
+	leaf     bool
 	children [ALPHA_NUMBER]*Node
 }
 
@@ -27,7 +27,7 @@ func pprint(arg interface{}) {
 }
 
 func newNode(cont string) *Node {
-	node := &Node{data: cont, end: true}
+	node := &Node{data: cont, leaf: true}
 	for i := 0; i < ALPHA_NUMBER; i++ {
 		node.children[i] = nil
 	}
@@ -35,18 +35,24 @@ func newNode(cont string) *Node {
 }
 
 func (nd *Node) addSimpleNode(cont string) {
-	nd.end = false
-	node := &Node{data: cont, end: true}
+	nd.leaf = false
+
+	node := &Node{data: cont, leaf: true}
+
 	for i := 0; i < ALPHA_NUMBER; i++ {
 		node.children[i] = nil
 	}
+
 	index := cont[0] - 'a'
+
 	if cont == EPSILONE {
 		index = 26
 	}
+
 	if nd.children[index] != nil {
 		panic("cant rewrite a node")
 	}
+
 	nd.children[index] = node
 }
 
@@ -73,14 +79,14 @@ func (nd *Node) cutNode(newData string) *Node {
 		newNd.children[i] = nd.children[i]
 		nd.children[i] = nil
 	}
-	newNd.end = nd.end
+	newNd.leaf = nd.leaf
 	return newNd
 }
 
 func (nd *Node) addComplexeNode(cont string) {
 	index := cont[0] - 'a'
 	if nd.children[index] == nil {
-		if nd.data != EPSILONE && nd.end {
+		if nd.data != EPSILONE && nd.leaf {
 			nd.addSimpleNode(EPSILONE)
 		}
 		nd.addSimpleNode(cont)
@@ -96,7 +102,7 @@ func (nd *Node) addComplexeNode(cont string) {
 			newNd := nd.children[index].cutNode(newSuffix)
 			nd.children[index].data = newOrigin
 			nd.children[index].children[newSuffix[0]-'a'] = newNd
-			nd.children[index].end = false
+			nd.children[index].leaf = false
 			nd.children[index].addSimpleNode(cont[match:])
 			// pprint(nd.children[index])
 		}
@@ -109,7 +115,7 @@ func TreeInit() *Tree {
 }
 
 func (nd *Node) addNode(cont string) {
-	if nd.end {
+	if nd.leaf {
 		nd.addSimpleNode(cont)
 	} else {
 		nd.addComplexeNode(cont)
@@ -122,7 +128,7 @@ func (tree *Tree) Addword(word string) {
 
 func (nd *Node) print(appendix string, level string) {
 	pprint(level + nd.data)
-	if nd.end {
+	if nd.leaf {
 		pprint(level + "-> " + appendix + nd.data)
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
@@ -134,7 +140,7 @@ func (nd *Node) print(appendix string, level string) {
 }
 
 func (nd *Node) SimplePrint(appendix string) {
-	if nd.end {
+	if nd.leaf {
 		pprint(appendix + nd.data)
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
@@ -147,7 +153,7 @@ func (nd *Node) SimplePrint(appendix string) {
 }
 
 func (nd Node) search(target string) bool {
-	if target == "" && (nd.end || nd.children[26] != nil) {
+	if target == "" && (nd.leaf || nd.children[26] != nil) {
 		return true
 	} else if target == "" {
 		return false
