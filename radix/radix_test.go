@@ -18,12 +18,13 @@ func TestPrintTree(t *testing.T) {
 	tree.Addword("khkkris")
 	tree.Addword("khkklis")
 
+	tree.Print()
 }
 
-func TestEee(t *testing.T) {
-	t.Error("two")
-}
+// func TestEee(t *testing.T) {
+// 	t.Error("two")
+// }
 
-func TestKjb(t *testing.T) {
-	t.Error("three")
-}
+// func TestKjb(t *testing.T) {
+// 	t.Error("three")
+// }
