@@ -133,7 +133,7 @@ func (nd *Node) print(appendix string, level string) {
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
 			if nd.children[i] != nil {
-				nd.children[i].print(appendix+nd.data, level+level)
+				nd.children[i].print(appendix+nd.data, level+"--")
 			}
 		}
 	}
