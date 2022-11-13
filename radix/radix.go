@@ -43,10 +43,12 @@ func (nd *Node) addSimpleNode(cont string) {
 		node.children[i] = nil
 	}
 
-	index := cont[0] - 'a'
+	var index int
 
-	if cont == EPSILONE {
+	if cont == "" || cont == EPSILONE {
 		index = 26
+	} else {
+		index = int(cont[0] - 'a')
 	}
 
 	if nd.children[index] != nil {
@@ -90,6 +92,9 @@ func (nd *Node) addComplexeNode(cont string) {
 			nd.addSimpleNode(EPSILONE)
 		}
 		nd.addSimpleNode(cont)
+
+	} else if cont == nd.children[index].data {
+		nd.children[index].addSimpleNode(EPSILONE)
 	} else {
 		nodeData := nd.children[index].data
 		match := countMatch(nodeData, cont)
@@ -139,13 +144,14 @@ func (nd *Node) print(appendix string, level string) {
 	}
 }
 
-func (nd *Node) SimplePrint(appendix string) {
+func (nd *Node) SimplePrint(appendix string, wordsCount *int) {
 	if nd.leaf {
+		*wordsCount += 1
 		pprint(appendix + nd.data)
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
 			if nd.children[i] != nil {
-				nd.children[i].SimplePrint(appendix + nd.data)
+				nd.children[i].SimplePrint(appendix+nd.data, wordsCount)
 			}
 		}
 	}
@@ -211,50 +217,60 @@ func (nd Node) getLastNode(target string, path *[]string) *Node {
 // 	return true, remainder
 // }
 
-func (nd Node) getPossibleSuffixes(start string) {
+func (nd Node) getPossibleSuffixes(start string) int {
 	path := []string{}
 	branchStart := nd.getLastNode(start, &path)
 
 	// prefixed, _ := checkPrefix(branchStart.data, path[len(path)-1])
 
-	fullPath := strings.Join(path[:len(path)-1], "")
+	var fullPath string
+	if len(path) != 0 {
+		fullPath = strings.Join(path[:len(path)-1], "")
+	} else {
+		fullPath = ""
+	}
 	// branchStart.print(fullPath, "--")
-
-	branchStart.SimplePrint(fullPath)
+	if branchStart == nil {
+		pprint("Word doesnt exist")
+	} else {
+		var wordsCount int = 0
+		branchStart.SimplePrint(fullPath, &wordsCount)
+		return wordsCount
+	}
+	return 0
 }
 
-func (tree Tree) AutoComplete(start string) bool {
-	tree.root.getPossibleSuffixes(start)
-	return true
+func (tree Tree) AutoComplete(start string) int {
+	return tree.root.getPossibleSuffixes(start)
 }
 
 func (tree Tree) Print() {
 	tree.root.print("", "--")
 }
 
-func main() {
+// func main() {
 
-	tree := TreeInit()
-	tree.Addword("aban")
-	tree.Addword("cabi")
-	tree.Addword("caba")
-	tree.Addword("cabaa")
-	tree.Addword("czbaa")
-	tree.Addword("khairi")
-	tree.Addword("khairis")
-	tree.Addword("khkkris")
-	// tree.addword("abd")
-	// pprint("---------- head ----------  ")
-	// pprint(tree.root)
-	// pprint("\n")
-	// pprint(tree.root.children[10])
-	// pprint("\n")
-	// pprint(tree.root.children[10].children[0])
-	// pprint("\n")
-	// pprint(tree.root.children[2].children[0])
-	// pprint(tree.root.children[3])
+// 	tree := TreeInit()
+// 	tree.Addword("aban")
+// 	tree.Addword("cabi")
+// 	tree.Addword("caba")
+// 	tree.Addword("cabaa")
+// 	tree.Addword("czbaa")
+// 	tree.Addword("khairi")
+// 	tree.Addword("khairis")
+// 	tree.Addword("khkkris")
+// 	// tree.addword("abd")
+// 	// pprint("---------- head ----------  ")
+// 	// pprint(tree.root)
+// 	// pprint("\n")
+// 	// pprint(tree.root.children[10])
+// 	// pprint("\n")
+// 	// pprint(tree.root.children[10].children[0])
+// 	// pprint("\n")
+// 	// pprint(tree.root.children[2].children[0])
+// 	// pprint(tree.root.children[3])
 
-	// pprint(tree.SearchTree("czbaa"))
+// 	// pprint(tree.SearchTree("czbaa"))
 
-	tree.AutoComplete("c")
-}
+// 	tree.AutoComplete("c")
+// }
