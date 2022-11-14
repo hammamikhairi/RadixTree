@@ -1,8 +1,8 @@
 package main
 
 import (
+	Radix "RadixTree/radix"
 	"encoding/csv"
-	Radix "example/mymodule/Radixtree/radix"
 	"fmt"
 	"os"
 	"time"
@@ -71,5 +71,6 @@ func main() {
 		end = time.Since(start)
 		fmt.Printf("%d matches found in ", number)
 		fmt.Println(end)
+		input = ""
 	}
 }
