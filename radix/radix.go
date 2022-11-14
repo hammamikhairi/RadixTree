@@ -6,11 +6,15 @@ import (
 	"strings"
 )
 
+// TODO : full phrases support ( add spaces, numbers, commas, ... to the alphabet )
+// TODO : write tests XD
+// TODO : Think of better Printing
+// TODO : add flags
+
 const (
 	ALPHA_NUMBER = 27
+	EPSILONE     = "\000"
 )
-
-var EPSILONE = "\000"
 
 type Node struct {
 	data     string
