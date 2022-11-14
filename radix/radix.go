@@ -199,9 +199,8 @@ func (nd Node) getLastNode(target string, path *[]string) *Node {
 
 	*path = append(*path, target[:matched])
 
-	if matched != len(nd.children[index].data) {
-
-		return nd.children[index]
+	if matched == 0 {
+		return &nd
 	}
 
 	return nd.children[index].getLastNode(target[matched:], path)
