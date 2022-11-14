@@ -240,6 +240,15 @@ func (nd Node) getPossibleSuffixes(start string) int {
 }
 
 func (tree Tree) AutoComplete(start string) int {
+	if start == "" {
+		pprint("Cant search empty strings")
+		return 0
+	}
+
+	if start[0]-'a' > ALPHA_NUMBER-1 {
+		return 0
+	}
+
 	return tree.root.getPossibleSuffixes(start)
 }
 
