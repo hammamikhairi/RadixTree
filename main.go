@@ -62,10 +62,6 @@ func main() {
 		fmt.Print("~ search : ")
 		fmt.Scanf("%s", &input)
 
-		if input == "" {
-			fmt.Println("you cant do that :(")
-			continue
-		}
 		// fmt.Print("------- Auto Completing \"")
 		// fmt.Print(input)
 		// fmt.Print("\" -------\n")
