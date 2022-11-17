@@ -1,9 +1,11 @@
 package radix
 
 import (
+	"errors"
 	"fmt"
 	"math"
-	"strings"
+	"regexp"
+	"unicode"
 )
 
 // TODO : full phrases support ( add spaces, numbers, commas, ... to the alphabet )
@@ -16,14 +18,13 @@ const (
 	EPSILONE     = "\000"
 )
 
+var errNotImplemented = errors.New("not implemented yet!")
+
 type Node struct {
 	data     string
 	leaf     bool
-	children [ALPHA_NUMBER]*Node
-}
-
-type Tree struct {
-	root *Node
+	Children [ALPHA_NUMBER]*Node
+	// parent   *Node
 }
 
 func pprint(arg interface{}) {
@@ -33,7 +34,7 @@ func pprint(arg interface{}) {
 func newNode(cont string) *Node {
 	node := &Node{data: cont, leaf: true}
 	for i := 0; i < ALPHA_NUMBER; i++ {
-		node.children[i] = nil
+		node.Children[i] = nil
 	}
 	return node
 }
@@ -44,7 +45,7 @@ func (nd *Node) addSimpleNode(cont string) {
 	node := &Node{data: cont, leaf: true}
 
 	for i := 0; i < ALPHA_NUMBER; i++ {
-		node.children[i] = nil
+		node.Children[i] = nil
 	}
 
 	var index int
@@ -55,11 +56,11 @@ func (nd *Node) addSimpleNode(cont string) {
 		index = int(cont[0] - 'a')
 	}
 
-	if nd.children[index] != nil {
+	if nd.Children[index] != nil {
 		panic("cant rewrite a node")
 	}
 
-	nd.children[index] = node
+	nd.Children[index] = node
 }
 
 func countMatch(main string, sub string) int {
@@ -75,214 +76,22 @@ func countMatch(main string, sub string) int {
 	return counter
 }
 
-func (nd *Node) cutNode(newData string) *Node {
-	newNd := newNode(newData)
-	flag := true
-	for i := 0; i < ALPHA_NUMBER; i++ {
-		if flag && nd.children[i] != nil {
-			flag = false
-		}
-		newNd.children[i] = nd.children[i]
-		nd.children[i] = nil
+func assertData(input string) error {
+
+	numeric := regexp.MustCompile(`^[A-Za-z]*$`).MatchString(input)
+
+	if !numeric {
+		return errors.New("unsupported word")
 	}
-	newNd.leaf = nd.leaf
-	return newNd
+
+	return nil
 }
 
-func (nd *Node) addComplexeNode(cont string) {
-	index := cont[0] - 'a'
-	if nd.children[index] == nil {
-		if nd.data != EPSILONE && nd.leaf {
-			nd.addSimpleNode(EPSILONE)
-		}
-		nd.addSimpleNode(cont)
-
-	} else if cont == nd.children[index].data {
-		nd.children[index].addSimpleNode(EPSILONE)
-	} else {
-		nodeData := nd.children[index].data
-		match := countMatch(nodeData, cont)
-
-		if match == len(nodeData) {
-			nd.children[index].addComplexeNode(cont[match:])
-		} else {
-			newOrigin := nodeData[:match]
-			newSuffix := nodeData[match:]
-			newNd := nd.children[index].cutNode(newSuffix)
-			nd.children[index].data = newOrigin
-			nd.children[index].children[newSuffix[0]-'a'] = newNd
-			nd.children[index].leaf = false
-			nd.children[index].addSimpleNode(cont[match:])
-			// pprint(nd.children[index])
+func digitPrefix(s string) int {
+	for i, r := range s {
+		if unicode.IsDigit(r) {
+			return i
 		}
 	}
+	return -1
 }
-
-func TreeInit() *Tree {
-	head := newNode(EPSILONE)
-	return &Tree{head}
-}
-
-func (nd *Node) addNode(cont string) {
-	if nd.leaf {
-		nd.addSimpleNode(cont)
-	} else {
-		nd.addComplexeNode(cont)
-	}
-}
-
-func (tree *Tree) Addword(word string) {
-	tree.root.addNode(word)
-}
-
-func (nd *Node) print(appendix string, level string) {
-	pprint(level + nd.data)
-	if nd.leaf {
-		pprint(level + "-> " + appendix + nd.data)
-	} else {
-		for i := 0; i < ALPHA_NUMBER; i++ {
-			if nd.children[i] != nil {
-				nd.children[i].print(appendix+nd.data, level+"--")
-			}
-		}
-	}
-}
-
-func (nd *Node) SimplePrint(appendix string, wordsCount *int) {
-	if nd.leaf {
-		*wordsCount += 1
-		pprint(appendix + nd.data)
-	} else {
-		for i := 0; i < ALPHA_NUMBER; i++ {
-			if nd.children[i] != nil {
-				nd.children[i].SimplePrint(appendix+nd.data, wordsCount)
-			}
-		}
-	}
-
-}
-
-func (nd Node) search(target string) bool {
-	if target == "" && (nd.leaf || nd.children[26] != nil) {
-		return true
-	} else if target == "" {
-		return false
-	}
-
-	index := target[0] - 'a'
-	if nd.children[index] == nil {
-		return false
-	}
-
-	if len(nd.children[index].data) > len(target) {
-		return false
-	}
-
-	return nd.children[index].search(target[len(nd.children[index].data):])
-}
-
-func (tree Tree) SearchTree(target string) bool {
-	// var path *[]string
-	exists := tree.root.search(target)
-	return exists
-}
-
-func (nd Node) getLastNode(target string, path *[]string) *Node {
-
-	if target == "" {
-		return &nd
-	}
-
-	index := target[0] - 'a'
-
-	if nd.children[index] == nil {
-		return nil
-	}
-
-	matched := countMatch(target, nd.children[index].data)
-
-	*path = append(*path, target[:matched])
-
-	if matched == 0 {
-		return &nd
-	}
-
-	return nd.children[index].getLastNode(target[matched:], path)
-}
-
-// func checkPrefix(main string, sub string) (bool, string) {
-// 	if main == sub {
-// 		return false, ""
-// 	}
-
-// 	remainder := strings.Replace(main, sub, "", 1)
-
-// 	return true, remainder
-// }
-
-func (nd Node) getPossibleSuffixes(start string) int {
-	path := []string{}
-	branchStart := nd.getLastNode(start, &path)
-
-	// prefixed, _ := checkPrefix(branchStart.data, path[len(path)-1])
-
-	var fullPath string
-	if len(path) != 0 {
-		fullPath = strings.Join(path[:len(path)-1], "")
-	} else {
-		fullPath = ""
-	}
-	// branchStart.print(fullPath, "--")
-	if branchStart == nil {
-		pprint("Word doesnt exist")
-	} else {
-		var wordsCount int = 0
-		branchStart.SimplePrint(fullPath, &wordsCount)
-		return wordsCount
-	}
-	return 0
-}
-
-func (tree Tree) AutoComplete(start string) int {
-	if start == "" {
-		pprint("Cant search empty strings")
-		return 0
-	}
-
-	if start[0]-'a' > ALPHA_NUMBER-1 {
-		return 0
-	}
-
-	return tree.root.getPossibleSuffixes(start)
-}
-
-func (tree Tree) Print() {
-	tree.root.print("", "--")
-}
-
-// func main() {
-
-// 	tree := TreeInit()
-// 	tree.Addword("aban")
-// 	tree.Addword("cabi")
-// 	tree.Addword("caba")
-// 	tree.Addword("cabaa")
-// 	tree.Addword("czbaa")
-// 	tree.Addword("khairi")
-// 	tree.Addword("khairis")
-// 	tree.Addword("khkkris")
-// 	// tree.addword("abd")
-// 	// pprint("---------- head ----------  ")
-// 	// pprint(tree.root)
-// 	// pprint("\n")
-// 	// pprint(tree.root.children[10])
-// 	// pprint("\n")
-// 	// pprint(tree.root.children[10].children[0])
-// 	// pprint("\n")
-// 	// pprint(tree.root.children[2].children[0])
-// 	// pprint(tree.root.children[3])
-
-// 	// pprint(tree.SearchTree("czbaa"))
-
-// 	tree.AutoComplete("c")
-// }

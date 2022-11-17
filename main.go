@@ -6,6 +6,10 @@ import (
 	"fmt"
 	"os"
 	"time"
+	// "encoding/csv"
+	// "fmt"
+	// "os"
+	// "time"
 )
 
 func getData() [][]string {
@@ -25,25 +29,24 @@ func getData() [][]string {
 	return data
 }
 
+func pprint(arg interface{}) {
+	fmt.Println(arg)
+}
+
 func main() {
 
 	data := getData()
 
-	//initialize tree
+	// initialize tree
 	tree := Radix.TreeInit()
 
-	for i, line := range data {
-		if i > 0 {
-			tree.Addword(line[0])
-		}
+	// fill the tree with words
+	err := tree.FillTree("data.csv")
+	if err != nil {
+		panic(err)
 	}
 
-	// prints the tree (currently unhuman)
-	// fmt.Println("------- Print Tree -------")
-	// tree.Print()
-
 	// auto completion based on initial strings
-
 	fmt.Println("------- Confirm that every word in the dataset is in the tree -------")
 	for i, line := range data {
 		if i > 0 {

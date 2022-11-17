@@ -1,24 +1,50 @@
 package radix
 
 import (
+	"encoding/csv"
+	"fmt"
+	"os"
 	"testing"
 )
 
-func TestPrintTree(t *testing.T) {
+func getData() [][]string {
+	file, err := os.Open("../data.csv")
+	if err != nil {
+		panic(err)
+	}
+	defer file.Close()
+
+	csvReader := csv.NewReader(file)
+
+	data, err := csvReader.ReadAll()
+	if err != nil {
+		panic(err)
+	}
+
+	return data
+}
+
+var Data [][]string = getData()
+
+func TestWordsAddition(t *testing.T) {
 	tree := TreeInit()
+	data := getData()
+	fmt.Println(ALPHA_NUMBER)
+	// tree.Addword("bbs")
+	// // add words
+	for _, line := range data {
+		tree.Addword(line[0])
+	}
 
-	// add words
-	tree.Addword("aban")
-	tree.Addword("cabi")
-	tree.Addword("caba")
-	tree.Addword("cabaa")
-	tree.Addword("czbaa")
-	tree.Addword("khairi")
-	tree.Addword("khairis")
-	tree.Addword("khkkris")
-	tree.Addword("khkklis")
+DataLoop:
+	for _, line := range data {
+		if !tree.SearchTree(line[0]) {
+			t.Errorf("Word <%s> not found", line[0])
+			break DataLoop
+		}
+	}
 
-	tree.Print()
+	// tree.Print()
 }
 
 // func TestEee(t *testing.T) {
