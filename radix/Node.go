@@ -74,7 +74,9 @@ func (nd *Node) print(appendix string, level string) {
 func (nd *Node) SimplePrint(appendix string, wordsCount *int) {
 	if nd.leaf {
 		*wordsCount += 1
-		pprint(appendix + nd.data)
+		if printRes {
+			pprint(appendix + nd.data)
+		}
 	} else {
 		for i := 0; i < ALPHA_NUMBER; i++ {
 			if nd.Children[i] != nil {

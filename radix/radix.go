@@ -18,7 +18,8 @@ const (
 	EPSILONE     = "\000"
 )
 
-var errNotImplemented = errors.New("not implemented yet!")
+var errNotImplemented = errors.New("not implemented yet")
+var printRes = true
 
 type Node struct {
 	data     string

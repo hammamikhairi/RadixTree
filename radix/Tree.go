@@ -70,7 +70,8 @@ func (tree Tree) SearchTree(target string) bool {
 	return exists
 }
 
-func (tree Tree) AutoComplete(start string) int {
+func (tree Tree) AutoComplete(start string, PrintRes bool) int {
+
 	if start == "" {
 		pprint("Cant search empty strings")
 		return 0
@@ -80,6 +81,7 @@ func (tree Tree) AutoComplete(start string) int {
 		return 0
 	}
 
+	printRes = PrintRes
 	return tree.Root.getPossibleSuffixes(start)
 }
 

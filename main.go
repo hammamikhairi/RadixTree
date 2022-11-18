@@ -70,7 +70,7 @@ func main() {
 		// fmt.Print("\" -------\n")
 
 		start = time.Now()
-		number := tree.AutoComplete(input)
+		number := tree.AutoComplete(input, false)
 		end = time.Since(start)
 		fmt.Printf("%d matches found in ", number)
 		fmt.Println(end)
