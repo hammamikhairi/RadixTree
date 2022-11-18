@@ -82,6 +82,10 @@ func (tree Tree) AutoComplete(start string, PrintRes bool) int {
 	}
 
 	printRes = PrintRes
+	defer func() {
+		printRes = true
+	}()
+
 	return tree.Root.getPossibleSuffixes(start)
 }
 
