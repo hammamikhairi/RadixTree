@@ -153,14 +153,14 @@ func (nd Node) getPossibleSuffixes(start string) int {
 	return 0
 }
 
-func (nd *Node) wipe() {
-	nd.data = "aaaaa"
-	if nd.leaf {
-		nd = nil
-	} else {
-		nd.Children[ALPHA_NUMBER-1] = nil
-	}
-}
+// func (nd *Node) wipe() {
+// 	nd.data = "aaaaa"
+// 	if nd.leaf {
+// 		nd = nil
+// 	} else {
+// 		nd.Children[ALPHA_NUMBER-1] = nil
+// 	}
+// }
 
 // func (nd *Node) removeNode(target string) error {
 
