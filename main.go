@@ -2,78 +2,44 @@ package main
 
 import (
 	Radix "RadixTree/radix"
-	"encoding/csv"
+	"bufio"
 	"fmt"
 	"os"
+	"strings"
 	"time"
-	// "encoding/csv"
-	// "fmt"
-	// "os"
-	// "time"
 )
 
-func getData() [][]string {
-	f, err := os.Open("data.csv")
-	if err != nil {
-		panic(err)
-	}
-	defer f.Close()
-
-	csvReader := csv.NewReader(f)
-
-	data, err := csvReader.ReadAll()
-	if err != nil {
-		panic(err)
-	}
-
-	return data
-}
-
-func pprint(arg interface{}) {
-	fmt.Println(arg)
-}
-
 func main() {
-
-	data := getData()
-
-	// initialize tree
 	tree := Radix.TreeInit()
+	fileStream, err := os.Open("SearchQueriesSample.txt")
 
-	// fill the tree with words
-	err := tree.FillTree("data.csv")
 	if err != nil {
-		panic(err)
+		fmt.Println(err)
 	}
 
-	// auto completion based on initial strings
-	fmt.Println("------- Confirm that every word in the dataset is in the tree -------")
-	for i, line := range data {
-		if i > 0 {
-			if !tree.SearchTree(line[0]) {
-				panic("A word is missing")
-			}
-		}
-	}
-	fmt.Println("All checks are good")
+	defer fileStream.Close()
 
-	fmt.Println("------- Auto Completion (no pre checks implemented yet) -------")
+	tree.FillTree(fileStream)
+
+	// Testing
 	var input string
 	var start time.Time
 	var end time.Duration
+	in := bufio.NewReader(os.Stdin)
 	for {
 		fmt.Print("~ search : ")
-		fmt.Scanf("%s", &input)
 
-		// fmt.Print("------- Auto Completing \"")
-		// fmt.Print(input)
-		// fmt.Print("\" -------\n")
+		input, err = in.ReadString('\n')
+		if err != nil {
+			panic(err)
+		}
 
 		start = time.Now()
-		number := tree.AutoComplete(input, false)
+		number := tree.AutoComplete(strings.Replace(input, "\n", "", 1), true)
 		end = time.Since(start)
 		fmt.Printf("%d matches found in ", number)
 		fmt.Println(end)
 		input = ""
 	}
+
 }

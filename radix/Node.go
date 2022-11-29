@@ -2,8 +2,28 @@ package radix
 
 import "strings"
 
-func use(val interface{}) {
-	_ = val
+type Node struct {
+	data     string
+	leaf     bool
+	Children [ALPHA_NUMBER]*Node
+}
+
+func (nd *Node) addSimpleNode(cont string) {
+	nd.leaf = false
+
+	node := &Node{data: cont, leaf: true}
+
+	for i := 0; i < ALPHA_NUMBER; i++ {
+		node.Children[i] = nil
+	}
+
+	var index int = getIndex(cont)
+
+	if nd.Children[index] != nil {
+		return
+	}
+
+	nd.Children[index] = node
 }
 
 func (nd *Node) cutNode(newData string) *Node {
@@ -21,8 +41,8 @@ func (nd *Node) cutNode(newData string) *Node {
 }
 
 func (nd *Node) addComplexeNode(cont string) {
-	index := cont[0] - 'a'
-	use(index)
+	var index int = getIndex(cont)
+
 	if nd.Children[index] == nil {
 		if nd.data != EPSILONE && nd.leaf {
 			nd.addSimpleNode(EPSILONE)
@@ -42,10 +62,9 @@ func (nd *Node) addComplexeNode(cont string) {
 			newSuffix := nodeData[match:]
 			newNd := nd.Children[index].cutNode(newSuffix)
 			nd.Children[index].data = newOrigin
-			nd.Children[index].Children[newSuffix[0]-'a'] = newNd
+			nd.Children[index].Children[getIndex(newSuffix)] = newNd
 			nd.Children[index].leaf = false
 			nd.Children[index].addSimpleNode(cont[match:])
-			// pprint(nd.Children[index])
 		}
 	}
 }
@@ -94,8 +113,7 @@ func (nd Node) search(target string) bool {
 		return false
 	}
 
-	index := target[0] - 'a'
-	use(index)
+	var index int = getIndex(target)
 	if nd.Children[index] == nil {
 		return false
 	}
@@ -113,8 +131,8 @@ func (nd Node) getLastNode(target string, path *[]string) *Node {
 		return &nd
 	}
 
-	index := target[0] - 'a'
-	use(index)
+	var index int = getIndex(target)
+
 	if nd.Children[index] == nil {
 		return nil
 	}
@@ -134,15 +152,13 @@ func (nd Node) getPossibleSuffixes(start string) int {
 	path := []string{}
 	branchStart := nd.getLastNode(start, &path)
 
-	// prefixed, _ := checkPrefix(branchStart.data, path[len(path)-1])
-
 	var fullPath string
 	if len(path) != 0 {
 		fullPath = strings.Join(path[:len(path)-1], "")
 	} else {
 		fullPath = ""
 	}
-	// branchStart.print(fullPath, "--")
+
 	if branchStart == nil {
 		pprint("Word doesnt exist")
 	} else {

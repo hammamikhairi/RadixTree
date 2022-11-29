@@ -1,10 +1,8 @@
 package radix
 
 import (
-	"encoding/csv"
-	"fmt"
+	"bufio"
 	"os"
-	"strings"
 )
 
 type Tree struct {
@@ -13,6 +11,7 @@ type Tree struct {
 
 // Initilizes a Radix Tree
 func TreeInit() *Tree {
+	SymbolesToIndex = fillSymbolesMap()
 	head := newNode(EPSILONE)
 	return &Tree{head}
 }
@@ -28,37 +27,15 @@ func (tree *Tree) Addword(word string) {
 // Fills the tree with words from a csv file.
 //
 // Parameters:
-//   - `path` : path to csv file
-//
-// **NOTE** each word must be in the first column of every row
-func (tree *Tree) FillTree(path string) error {
+//   - `fileStream` : *os.File
+func (tree *Tree) FillTree(fileStream *os.File) error {
 
-	if !strings.HasSuffix(path, ".csv") {
-		panic("can only read csv files (for now atleast)")
-	}
+	fileScanner := bufio.NewScanner(fileStream)
 
-	file, err := os.Open(path)
+	fileScanner.Split(bufio.ScanLines)
 
-	if err != nil {
-		return err
-	}
-	defer file.Close()
-
-	csvReader := csv.NewReader(file)
-
-	data, err := csvReader.ReadAll()
-	if err != nil {
-		return nil
-	}
-
-	for _, row := range data {
-		err = assertData(row[0])
-
-		if err != nil {
-			panic(fmt.Errorf("%w \nword : %s\n%s^", err, row[0], strings.Repeat(" ", digitPrefix(row[0])+7)))
-		}
-
-		tree.Addword(row[0])
+	for fileScanner.Scan() {
+		tree.Addword(fileScanner.Text())
 	}
 
 	return nil
