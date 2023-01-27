@@ -48,7 +48,7 @@ func main() {
 ## Installation
 
 ```bash
-go get github.com/hammamikhairi/RadixTree/radix
+go get github.com/hammamikhairi/RadixTree
 ```
 
 ## LFSA 88
