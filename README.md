@@ -13,15 +13,6 @@ a radix tree (also radix trie or compact prefix tree) is a data structure that r
 ## Usage
 
 ```go
-
-package main
-
-import (
-	Radix "RadixTree/radix"
-)
-
-func main() {
-
   // initialize tree
   tree := Radix.TreeInit()
 
@@ -31,18 +22,11 @@ func main() {
   // fill the tree with words from a csv file
   err := tree.FillTree("data.csv")
 
-  if err != nil {
-    panic(err)
-  }
-
   // search for a word in the tree
   found := tree.SearchTree("khairi")
 
   // auto complete a given sub string
   propNumber := tree.AutoComplete(input, false)
-
-}
-
 ```
 
 ## Installation
