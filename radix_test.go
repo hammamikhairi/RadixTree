@@ -1,4 +1,4 @@
-package RadixTree
+package radixtree
 
 import (
 	"encoding/csv"
