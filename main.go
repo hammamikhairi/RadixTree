@@ -1,14 +1,15 @@
 package main
 
 import (
-	Radix "RadixTree/radix"
 	"bufio"
 	"fmt"
+	Radix "github.com/hammamikhairi/RadixTree/radix"
 	"os"
 	"strings"
 	"time"
 )
 
+// This is an Example use of the package
 func main() {
 	tree := Radix.TreeInit()
 	fileStream, err := os.Open("SearchQueriesSample.txt")

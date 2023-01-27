@@ -45,7 +45,13 @@ func main() {
 
 ```
 
-## Project52
+## Installation
+
+```bash
+go get github.com/hammamikhairi/RadixTree/radix
+```
+
+## LFSA 88
 
 This project is a part of [LFSA 88](https://github.com/hammamikhairi/LFSA-88).
 
